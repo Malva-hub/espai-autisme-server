@@ -3,7 +3,10 @@ const router = require("express").Router();
 const User = require("../models/User.model");
 
 const bcrypt = require("bcryptjs");
-const { restart } = require("nodemon");
+
+const jwt = require("jsonwebtoken");
+
+const isAuthenticated = require("../middlewares/isAuthenticated");
 
 // 1.SIG UP
 
@@ -69,59 +72,57 @@ router.post("/signup", async (req, res, next) => {
 // 2.LOG IN
 
 //POST "/api/auth/login"  => validar las credenciales del usuario
-router.post("/login", async (req, res, next) =>{
+router.post("/login", async (req, res, next) => {
+  console.log(req.body);
+  const { email, password } = req.body;
 
-    console.log(req.body)
-    const { email, password } = req.body 
+  if (!email || !password) {
+    res.status(400).json({ errorMessage: "Debes rellenar todos los campos" });
+    return;
+  }
 
-    if(!email || !password){
-        res.status(400).json({errorMessage:"Debes rellenar todos los campos"})
-        return;
+  try {
+    const foundUser = await User.findOne({ email: email });
+    if (foundUser === null) {
+      res.status(400).json({ errorMessage: "Usuario no registrado" });
     }
 
-    try{
-        const foundUser = await User.findOne({email:email})
-        if(foundUser === null){
-            res.status(400).json({errorMessage: "Usuario no registrado"})
-        }
-
-        const isPasswordIsValid = await bcrypt.compare(password, foundUser.password)
-        console.log(isPasswordIsValid)
-        if(isPasswordIsValid === false){
-            res.status(400).json({errorMessage:"La contraseña es incorrecta"})
-            return;
-        }
-
-        const payload = {
-            _id:foundUser._id,
-            email:foundUser.email
-        }
-        const authToken = jwt.sign(
-            payload,
-            process.env.TOKEN_SECRET,
-            {algorithm:"HS256", expriresIn: "4h"}
-        )
-
-        res.json({authToken:authToken})
-
-    }catch(error){
-        next(error)
+    const isPasswordIsValid = await bcrypt.compare(
+      password,
+      foundUser.password
+    );
+    console.log(isPasswordIsValid);
+    if (isPasswordIsValid === false) {
+      res.status(400).json({ errorMessage: "La contraseña es incorrecta" });
+      return;
     }
 
+    const payload = {
+      _id: foundUser._id,
+      email: foundUser.email,
+    }
+    const authToken = jwt.sign(
+        payload, 
+        process.env.TOKEN_SECRET, 
+        {algorithm: "HS256", expiresIn: "4h"}
+        
+    )
+
+    res.json({ authToken: authToken });
+
+  } catch (error) {
+    next(error);
+  }
+});
 
 
+//3.VERIFY
 
 
-
-
-
+//GET "api/auth/verify" => verificar que el usuario ya ha sido validado
+router.get("/verify", isAuthenticated, ( req, res, next) => {
+    res.json(req.payload)
 })
-
-
-
-
-
-
 
 
 
