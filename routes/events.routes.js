@@ -5,10 +5,14 @@ const Event = require("../models/Event.model");
 const isAthenticated = require("../middlewares/isAuthenticated");
 
 
+const uploader = require("../middlewares/uploader.js");
+
+
+
+
 //POST "/events" => Crear un evento
-router.post("/", isAthenticated, async (req, res, next) => {
+router.post("/", isAthenticated, uploader.single("image"), async (req, res, next) => {
     const {title, description, address, image, price,} = req.body 
-    //todo Pregunta: Como esto lo rellena el admin hace falta que lo compruebe
     if (!title || !description || !address || !price) {
         res
           .status(400)
@@ -20,8 +24,8 @@ router.post("/", isAthenticated, async (req, res, next) => {
             title,
             description,
             address,
-            //image, //TODO CLOUDINARY :)
             price, 
+            image,
             creator: req.payload._id
         })
         res.status(201).json()
@@ -31,11 +35,56 @@ router.post("/", isAthenticated, async (req, res, next) => {
 })
 
 
+//GET "/events" => Mostrar todos los eventos
+router.get("/", async (req, res, next) => {
+    try{
+        const allEvents = await Event.find()
+        res.json(allEvents)
+    }catch(error){
+        next(error)
+    }
+})
 
-//GET "/events" => Mostrar los eventos 
+//GET "/events/:idevent" => Buscar un evento
+router.get("/:idevent", async (req, res, next) => {
+    const {idevent} = req.params
+    try{
+        const oneEvent = await Event.findById(idevent)
+        res.json(oneEvent)
+    }catch(error){
+        next(error)
+    }
+})
 
+//DELETE "/events/:idevent" => Borrar un evento
+router.delete("/:idevent", async(req, res, next) => {
+    const {idevent} = req.params
+    try{
+        await Event.findByIdAndDelete(idevent)
+        res.json("se borro correctamente")
+    }catch(erro){
+        next(error)
+    }
+})
 
-
+//PATCH "/events/:idevent" => Editar un evento
+router.patch("/:idevent", isAthenticated, async (req, res, next) => {
+    const {title, description, address, image, price,} = req.body 
+    const {idevent} = req.params
+    try{
+        await Event.findByIdAndUpdate(idevent, {
+            title,
+            description,
+            address,
+            price, 
+            image,
+            creator: req.payload._id
+        })
+        res.json("Evento modificado")
+    }catch(error){
+        next(error)
+    }
+})
 
 
 

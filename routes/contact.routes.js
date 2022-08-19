@@ -2,8 +2,6 @@ const router = require("express").Router();
 
 const Contact = require("../models/Contact.model");
 
-//todo Pregunta: tengo que poner aquí clausulas de guardia si los  de los campos 
-//todo           si están vacíos o puedo ponerlo en el fronted 
 
 //POST "/contact" => crear un contacto
 router.post("/", async (req, res, next) =>{
