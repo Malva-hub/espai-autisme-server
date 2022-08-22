@@ -38,7 +38,7 @@ router.post("/", isAthenticated, uploader.single("image"), async (req, res, next
 //GET "/events" => Mostrar todos los eventos
 router.get("/", async (req, res, next) => {
     try{
-        const allEvents = await Event.find()
+        const allEvents = await Event.find().limit(10)
         res.json(allEvents)
     }catch(error){
         next(error)
