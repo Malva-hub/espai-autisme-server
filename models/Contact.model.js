@@ -22,6 +22,10 @@ const contactSchema = new Schema(
       type: Number,
 	    required: true
     },
+    isaproved:{
+      type: Boolean,
+      default: false
+    }
     
 },
 {
