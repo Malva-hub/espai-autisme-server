@@ -32,7 +32,7 @@ router.post("/:idevent", isAuthenticated, async (req, res, next) => {
 });
 
 //GET "/comment/:idevent" => mostrar comentarios de un evento
-router.get("/:idevent", isAuthenticated, async (req, res, next) => {
+router.get("/:idevent", async (req, res, next) => {
   const { idevent } = req.params;
 
   try {
