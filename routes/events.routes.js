@@ -38,15 +38,15 @@ router.post("/", isAthenticated, uploader.single("image"), async (req, res, next
 //GET "/events" => Mostrar todos los eventos
 router.get("/", async (req, res, next) => {
     try{
-        const allEvents = await Event.find().limit(10)
+        const allEvents = await Event.find().limit(10).populate("attendees", "username")
         res.json(allEvents)
     }catch(error){
         next(error)
     }
 })
 
-//GET "/events/:idevent" => Buscar un evento
-router.get("/:idevent", async (req, res, next) => {
+//GET "/events/:idevent/details" => Buscar un evento
+router.get("/:idevent/details", async (req, res, next) => {
     const {idevent} = req.params
     try{
         const oneEvent = await Event.findById(idevent)
@@ -86,7 +86,28 @@ router.patch("/:idevent", isAthenticated, async (req, res, next) => {
     }
 })
 
+//PATCH "/events/:idevent/attendees" => Añadir un usuario a la lista de attendees
+router.patch("/:idEvent/attendees", isAthenticated, async (req, res, next) => {
+    const {idEvent} = req.params
+    try{
+        await Event.findByIdAndUpdate(idEvent, {$addToSet: {attendees: req.payload._id}})
+        res.json("Usuario agregado a asistir al evento")
+    }catch(error){
+        next(error)
+    }
+})
 
+
+//GET "/events/attendees" => Mostrar listado de los eventos a los que asistirá un usuario
+router.get("/attendees/my-profile", isAthenticated, async (req, res, next) => {
+    try{
+        const myAttendees = await Event.find({ attendees: {$in : [req.payload._id]  } })
+        console.log("ESTO", myAttendees)
+        res.json(myAttendees)
+    }catch(error){
+        next(error)
+    }
+})
 
 
 
