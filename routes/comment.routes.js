@@ -50,13 +50,12 @@ router.delete("/:idcomment", isAuthenticated, async (req, res, next) => {
 
   try {
     const commentCreator = await Comment.findById(idcomment).populate("creator");
-    console.log(commentCreator.creator._id)
-    console.log(req.payload._id)
+    
     if (req.payload._id == commentCreator.creator._id) {
 
       await Comment.findByIdAndDelete(idcomment);
       res.json("se borro correctamente el usuario");
-
+      
     } else {
       res.json({
         errorMessage:

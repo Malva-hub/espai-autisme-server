@@ -38,6 +38,21 @@ router.get("/", async (req, res, next) => {
 })
 
 
+//PATCH "/contact/:idcontact" => modificar propiedad isaproved
+router.patch("/:idcontact", async (req, res, next) => {
+    const {idcontact} = req.params
+    
+    
+
+    try{
+        const oneContact = await Contact.findByIdAndUpdate( idcontact, {
+           isaproved:true})
+        res.json("Este contacto ahora es un socio ")
+    }catch(error){
+        next(error)
+    }
+})
+
 
 
 module.exports = router;
