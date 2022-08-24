@@ -21,4 +21,7 @@ router.use("/events", eventsRoutes)
 const commentRoutes = require("./comment.routes")
 router.use("/comment", commentRoutes)
 
+const uploadRoutes = require("./upload.routes")
+router.use("/upload", uploadRoutes)
+
 module.exports = router;

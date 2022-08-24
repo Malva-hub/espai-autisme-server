@@ -31,6 +31,18 @@ router.post("/:idevent", isAuthenticated, async (req, res, next) => {
   
 });
 
+//GET "/comment" => mostrar todos los comentarios
+router.get("/", async (req, res, next) => {
+  
+  try {
+    const allComments = await Comment.find();
+
+    res.json(allComments);
+  } catch (error) {
+    next(error);
+  }
+});
+
 //GET "/comment/:idevent" => mostrar comentarios de un evento
 router.get("/:idevent", async (req, res, next) => {
   const { idevent } = req.params;
@@ -45,23 +57,23 @@ router.get("/:idevent", async (req, res, next) => {
 });
 
 //DELETE "/comment/:idcomment" => borrar un comentario
-router.delete("/:idcomment", isAuthenticated, async (req, res, next) => {
+router.delete("/:idcomment", async (req, res, next) => {
   const { idcomment } = req.params;
 
   try {
-    const commentCreator = await Comment.findById(idcomment).populate("creator");
+    // const commentCreator = await Comment.findById(idcomment).populate("creator");
     
-    if (req.payload._id == commentCreator.creator._id) {
+    // if (req.payload._id == commentCreator.creator._id) {
 
       await Comment.findByIdAndDelete(idcomment);
       res.json("se borro correctamente el usuario");
       
-    } else {
-      res.json({
-        errorMessage:
-          "No puedes borrar el comentario si no eres el propietario",
-      });
-    }
+    // } else {
+    //   res.json({
+    //     errorMessage:
+    //       "No puedes borrar el comentario si no eres el propietario",
+    //   });
+    // }
   } catch (error) {
     next(error);
   }
