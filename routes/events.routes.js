@@ -7,13 +7,13 @@ const isAthenticated = require("../middlewares/isAuthenticated");
 
 const uploader = require("../middlewares/uploader.js");
 
-//const isAdmin = require("../middlewares/isAdmin");
+const isAdmin = require("../middlewares/isAdmin");
 
 
 
 
 //POST "/events" => Crear un evento
-router.post("/", isAthenticated, uploader.single("image"), async (req, res, next) => {
+router.post("/", isAthenticated, isAdmin, uploader.single("image"), async (req, res, next) => {
     const {title, description, address, image, price,} = req.body 
     if (!title || !description || !address || !price) {
         res
