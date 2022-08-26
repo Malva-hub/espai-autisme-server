@@ -2,35 +2,36 @@ const { Schema, model } = require("mongoose");
 
 const eventSchema = new Schema(
   {
-   
     title: {
       type: String,
-      required: true
+      required: true,
     },
     description: {
       type: String,
-      required:true
+      required: true,
     },
-    address:{
+    address: {
       type: String,
-      required: true
+      required: true,
     },
-      image: {
+    image: {
       type: String,
-      //default: //poner una imagen por defecto por si no hay foto 
+      //default: //poner una imagen por defecto por si no hay foto
     },
     price: {
-       type:Number
+      type: Number,
     },
-    attendees: [{
+    attendees: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    creator: {
       type: Schema.Types.ObjectId,
-      ref: "User"
-    }],
-     creator: {
-      type: Schema.Types.ObjectId,
-      ref: "User"
+      ref: "User",
     },
-  }, 
+  },
   {
     timestamps: true,
   }

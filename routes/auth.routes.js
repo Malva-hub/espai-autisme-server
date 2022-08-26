@@ -73,7 +73,7 @@ router.post("/signup", async (req, res, next) => {
 
 //POST "/api/auth/login"  => validar las credenciales del usuario
 router.post("/login", async (req, res, next) => {
-  console.log(req.body);
+  
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -91,7 +91,7 @@ router.post("/login", async (req, res, next) => {
       password,
       foundUser.password
     );
-    console.log(isPasswordIsValid);
+    
     if (isPasswordIsValid === false) {
       res.status(400).json({ errorMessage: "La contraseña es incorrecta" });
       return;
@@ -100,31 +100,24 @@ router.post("/login", async (req, res, next) => {
     const payload = {
       _id: foundUser._id,
       email: foundUser.email,
-      role: foundUser.role
-    }
-    const authToken = jwt.sign(
-        payload, 
-        process.env.TOKEN_SECRET, 
-        {algorithm: "HS256", expiresIn: "4h"}
-        
-    )
+      role: foundUser.role,
+    };
+    const authToken = jwt.sign(payload, process.env.TOKEN_SECRET, {
+      algorithm: "HS256",
+      expiresIn: "4h",
+    });
 
     res.json({ authToken: authToken });
-
   } catch (error) {
     next(error);
   }
 });
 
-
 //3.VERIFY
 
-
 //GET "api/auth/verify" => verificar que el usuario ya ha sido validado
-router.get("/verify", isAuthenticated, ( req, res, next) => {
-    res.json(req.payload)
-})
-
-
+router.get("/verify", isAuthenticated, (req, res, next) => {
+  res.json(req.payload);
+});
 
 module.exports = router;

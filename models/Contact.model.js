@@ -1,37 +1,35 @@
 const { Schema, model } = require("mongoose");
 
 const contactSchema = new Schema(
-{
+  {
     username: {
       type: String,
-	    required: true
+      required: true,
     },
     firstname: {
       type: String,
-	    required: true
+      required: true,
     },
     secondname: {
       type: String,
-	    required: true
+      required: true,
     },
     email: {
       type: String,
-	    required: true
+      required: true,
     },
     telephone: {
       type: Number,
-	    required: true
+      required: true,
     },
-    isaproved:{
+    isaproved: {
       type: Boolean,
-      default: false
-    }
-    
-},
-{
-   timestamps: true,
-},
-
+      default: false,
+    },
+  },
+  {
+    timestamps: true,
+  }
 );
 
 const Contact = model("Contact", contactSchema);

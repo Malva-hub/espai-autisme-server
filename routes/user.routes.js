@@ -8,7 +8,7 @@ const isAuthenticated = require("../middlewares/isAuthenticated");
 router.get("/myprofile", isAuthenticated, async (req, res, next) => {
   try {
     const profileUser = await User.findById(req.payload._id);
-    console.log(profileUser);
+   
     res.json(profileUser);
   } catch (error) {
     next(error);
@@ -18,7 +18,7 @@ router.get("/myprofile", isAuthenticated, async (req, res, next) => {
 //PATCH "/user/myprofile" => editar perfil
 router.patch("/myprofile", isAuthenticated, async (req, res, next) => {
   const { username, email } = req.body;
-  console.log(req.body);
+  
   try {
     await User.findByIdAndUpdate(req.payload._id, {
       username,
@@ -31,13 +31,13 @@ router.patch("/myprofile", isAuthenticated, async (req, res, next) => {
 });
 
 //DELETE "/user/myprofile" => borrar perfil
-router.delete("/myprofile", isAuthenticated, async(req, res, next) =>{
-    try{
-        await User.findByIdAndDelete(req.payload._id)
-        res.json("se borro correctamente el usuario")
-    }catch(error){
-        next(error)
-    }
-})
+router.delete("/myprofile", isAuthenticated, async (req, res, next) => {
+  try {
+    await User.findByIdAndDelete(req.payload._id);
+    res.json("se borro correctamente el usuario");
+  } catch (error) {
+    next(error);
+  }
+});
 
 module.exports = router;

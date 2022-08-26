@@ -11,29 +11,27 @@ router.post("/:idevent", isAuthenticated, async (req, res, next) => {
   const { idevent } = req.params;
   const { content } = req.body;
 
-    if (!content) {
-        res
-        .status(400)
-        .json({ errorMessage: "Tienes que rellenar el campo del comentario" });
-        return;
-    } 
-    try {
-      await Event.findById(idevent);
-      await Comment.create({
-        event: idevent,
-        creator: req.payload._id,
-        content,
-      });
-      res.json("se creo el comentario en el evento");
-    } catch (error) {
-      next(error);
-    }
-  
+  if (!content) {
+    res
+      .status(400)
+      .json({ errorMessage: "Tienes que rellenar el campo del comentario" });
+    return;
+  }
+  try {
+    await Event.findById(idevent);
+    await Comment.create({
+      event: idevent,
+      creator: req.payload._id,
+      content,
+    });
+    res.json("se creo el comentario en el evento");
+  } catch (error) {
+    next(error);
+  }
 });
 
 //GET "/comment" => mostrar todos los comentarios
 router.get("/", async (req, res, next) => {
-  
   try {
     const allComments = await Comment.find();
 
@@ -62,12 +60,12 @@ router.delete("/:idcomment", async (req, res, next) => {
 
   try {
     // const commentCreator = await Comment.findById(idcomment).populate("creator");
-    
+
     // if (req.payload._id == commentCreator.creator._id) {
 
-      await Comment.findByIdAndDelete(idcomment);
-      res.json("se borro correctamente el usuario");
-      
+    await Comment.findByIdAndDelete(idcomment);
+    res.json("se borro correctamente el usuario");
+
     // } else {
     //   res.json({
     //     errorMessage:
